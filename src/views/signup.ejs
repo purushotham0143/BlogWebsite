@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Page</title>
+    <%- include("./partials/head") %>
+    <%- include("./partials/script") %>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- this is for loading animation in button -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+       body{
+        background-color:rgb(31, 31, 33) ;
+        color: rgb(222, 222, 222);
+       }
+    </style>
+</head>
+<body>
+    <!--start signup component -->
+    <%- include("./partials/signupForm") %>
+    <!--ends signup component -->
+
+    <script>
+        // handling clicking signup button
+        document.querySelector("form").addEventListener("submit",(e)=>{
+          e.preventDefault();
+        //   console.log("submit signup")
+
+          // adding animation for loading in button
+          document.querySelector("button").innerHTML = `<i class="fa fa-spinner fa-spin"></i>Loading`
+          const obj = {
+            name:document.querySelector("#name").value.trim(),
+            email:document.querySelector("#exampleInputEmail1").value.trim(),
+            password:document.querySelector("#exampleInputPassword1").value.trim(),
+          }
+
+          fetch("/user/signup",{
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify(obj)
+          })
+          .then((res)=>{
+            if (!res.ok) {
+                throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+
+            if(res.redirected){
+               // toasting a success msg
+              const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              }
+            });
+            Toast.fire({
+              icon: "success",
+              title: "Account created in successfully"
+            });
+
+            // delaying the rediction to see the effect of toast
+            setTimeout(()=>{
+                window.location.href = "/home"
+            },1000)
+            }
+          })
+          .then(res=>{
+    
+          })
+          .catch((err)=>{
+            console.log("err",err);
+            Swal.fire({
+            position: "top-mid-start",
+            icon: "error",
+            title: "Email id already exists",
+            text: "Try with different email id",
+            showConfirmButton: false,
+            timer: 2000
+          });
+          })
+          .finally(()=>{
+          document.querySelector("button").innerText = "Signup";
+          })
+    })
+       
+      </script>
+</body>
+</html>

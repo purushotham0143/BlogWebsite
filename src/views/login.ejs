@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loginpage</title>
+    <!-- CDN header linkfor bootstrap -->
+    <%- include("./partials/head") %>
+     <!-- CDN script for bootstrap -->
+    <%- include("./partials/script") %>
+     <!-- CDN script for sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+       body{
+        background-color:rgb(31, 31, 33) ;
+        color: rgb(222, 222, 222);
+       }
+    </style>
+</head>
+<body>
+    <!--start login component -->
+    <%- include("./partials/loginForm") %>
+    <!--end login component -->
+    
+
+    <script>
+          // handling on clicking login button
+          document.querySelector("form").addEventListener("submit",(e)=>{
+          e.preventDefault();
+      
+          // adding animation for loading in button
+          document.querySelector("button").innerHTML = `<i class="fa fa-spinner fa-spin"></i>Loading`
+          const obj = {
+            email:document.querySelector("#exampleInputEmail1").value.trim(),
+            password:document.querySelector("#exampleInputPassword1").value.trim(),
+          }
+
+          fetch("/user/login",{
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify(obj)
+          })
+          .then((res)=>{
+            
+            if (!res.ok) {
+                throw new Error(`${res.messages}`);
+            }
+            if(res.redirected){
+              // toasting a success msg
+              const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              }
+            });
+            Toast.fire({
+              icon: "success",
+              title: "login in successfull"
+            });
+            
+            // delaying the rediction to see the effect of toast
+            setTimeout(()=>{
+                window.location.href = "/home"
+            },1000)
+            }
+          })
+          .then(res=>{
+
+          })
+          .catch((err)=>{
+            console.log("err",err);
+            Swal.fire({
+              title: "Credential does not matched",
+              icon: "error",
+              draggable: true
+            });
+          })
+          .finally(()=>{
+          document.querySelector("button").innerText = "Login";
+          })
+    })
+       
+      </script>
+</body>
+</html>
