@@ -8,7 +8,7 @@ const port = 3000; // change here
 app.listen(port,(err)=>{
     err ? console.log(err.message) : console.log(`server started at ${port}`);
 })
-const uri = "mongodb+srv://rohan:rohan123@cluster0.qzw60o2.mongodb.net/blogDB?retryWrites=true&w=majority&appName=Cluster0"
+const uri = "mongodb+srv://rpurushotham0143:puru123@cluster0.ivuxpys.mongodb.net/Blogweb?retryWrites=true&w=majority&appName=Cluster0"
 mongoose.connect(uri).then(()=>{
 console.log("connected to DB");
 })
